@@ -100,7 +100,7 @@ define(['./USGS', './Draw', './Control', './WorldPoint'], function(USGS, Draw, c
 
         this.magSlider.slider({
             range: true,
-            values: [4, 10.0],
+            values: [0, 10.0],
             min: 0.0,
             max: 10.0,
             step: 0.1,
@@ -166,6 +166,33 @@ define(['./USGS', './Draw', './Control', './WorldPoint'], function(USGS, Draw, c
             document.getElementById("coordSearch").value = point.Lati.toFixed(3).toString() + ',' + point.Long.toFixed(3).toString();
         };
 
+        this.setGPSCoordinate = function (point) {
+            document.getElementById("gps-location-button").onclick = function(){
+                if ("geolocation" in navigator){ //check geolocation available 
+                    //try to get user current location using getCurrentPosition() method
+                    navigator.geolocation.getCurrentPosition(function(position){ 
+                        console.log("Found your location \nLat : "+position.coords.latitude+" \nLang :"+ position.coords.longitude);
+                        document.getElementById("gpsLocation").value = position.coords.latitude.toString() + ',' + position.coords.longitude.toString();
+
+                    });
+                }else{
+                    console.log("Browser doesn't support geolocation!");
+                }
+            }
+            // document.getElementById("gpsLocation").value = point.Lati.toFixed(3).toString() + ',' + point.Long.toFixed(3).toString();
+        };
+
+
+        if ("geolocation" in navigator){ //check geolocation available 
+            //try to get user current location using getCurrentPosition() method
+            navigator.geolocation.getCurrentPosition(function(position){ 
+                console.log("Found your location \nLat : "+position.coords.latitude+" \nLang :"+ position.coords.longitude);
+            });
+        }else{
+            console.log("Browser doesn't support geolocation!");
+        }
+
+
         this.radiusSearch = $("#searchRadius").on("click", function() {
             var origin = document.getElementById("coordSearch").value;
             var radius = document.getElementById("radiusKMSearch").value;
@@ -175,6 +202,8 @@ define(['./USGS', './Draw', './Control', './WorldPoint'], function(USGS, Draw, c
             queryParameters.setradius(radius);
             control.FancyLookAt(origin);
             update();
+            console.log(GeoJSONHandler());
+
         });
 
         this.rightclickhandler = function(event) {
@@ -184,15 +213,15 @@ define(['./USGS', './Draw', './Control', './WorldPoint'], function(USGS, Draw, c
             point.update3Dfrom2D(x, y);
             control.updateSelectedPoint(point);
             var origin = document.getElementById("coordSearch").value;
-            document.getElementById("radiusKMSearch").value = 500;
-            var radius = 500;
+            document.getElementById("radiusKMSearch").value = 1000;
+            var radius = 1000;
             control.setDrawMode("radialSearch");
             queryParameters.setoriginlong(origin.split(",")[0]);
             queryParameters.setoriginlati(origin.split(",")[1]);
             queryParameters.setradius(radius);
             control.FancyLookAt(origin);
             update();
-            // console.log(point);
+            console.log(point);
         };
 
         this.reset = $("#reset").on("click", function() {
@@ -203,9 +232,12 @@ define(['./USGS', './Draw', './Control', './WorldPoint'], function(USGS, Draw, c
 
         var GeoJSONHandler = function(controlGeoJSON) {
             var GeoJSON = controlGeoJSON;
+            console.log(GeoJSON);
+            
             var eqArray = [];
             for (var i = 0; i < GeoJSON.features.length; i++) {
-                if (GeoJSON.features[i].properties.mag > 4.5) {
+                //hardcoded filter 
+                if (GeoJSON.features[i].properties.mag > 0) {
                     eqArray.push(GeoJSON.features[i]);
                 }
             }

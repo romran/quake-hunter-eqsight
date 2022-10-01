@@ -32,6 +32,10 @@ function openTabLeft(evt, tabName) {
     if (document.getElementById(tabName).style.display == "none") {
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.setAttribute("target", "active");
+        console.log(tabName);
+        if(tabName=="gps_location"){
+            document.getElementById("radiusKMSearch").value = 1000;
+        }
 
     }
     else {

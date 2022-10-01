@@ -46,6 +46,10 @@
             <span class="glyphicon glyphicon-pencil"></span></a>
     </li>
     <li>
+        <a class="tablinksLeft" id="gps-location-button" onclick="openTabLeft(event, 'gps_location')" title="GPS Location">
+            <span class="glyphicon glyphicon-map-marker"></span></a>
+    </li>
+    <li>
         <a class="tablinksLeft" id="reset" title="Reset">
             <span class="glyphicon glyphicon-repeat"></span></a>
     </li>
@@ -231,6 +235,7 @@
                         <div class="ui-slider-range ui-widget-header ui-corner-all"
                              style="width: 24.2857%; left: 75.7143%;"></div>
                     </div>
+                    <!-- <h5><span id="magSliderValue">5.3 to 7 Richter</span></h5> -->
                     <h5><span id="magSliderValue">5.3 to 7 Richter</span></h5>
                 </div>
                 <div class="smallRule">
@@ -329,7 +334,7 @@
             </p>
         </div>
         <hr>
-        <h4>Radius Search:</h4>
+        <!-- <h4>Radius Search:</h4>
         <p>
             Right click on the globe or fill in.
         </p>
@@ -344,11 +349,41 @@
             <span class="input-group-btn">
                 <button id="searchRadius" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-record" aria-hidden="true"></span></button>
                 </span>
-        </div>
+        </div> -->
         <!-- <button id="searchRadius" class="btn btn-primary" type="button">GO!</button> -->
     </div>
 
-    <div id="graphs" class="col-sm-2 tabcontentRight" style="width: 35% !important;">
+    <div id="gps_location" class="col-sm-2 tabcontentLeft leftTabPadding" style="font-size: 12px !important;">
+        <hr>
+        <h4>Radius Search:</h4>
+        <p>
+            Right click on the globe or fill in.
+        </p>
+        <h5 style="text-align: left">Coordinates:</h5>
+        <div class="input-group">
+            <input id="coordSearch" onchange="checkNumber(this)" maxlength="30"  type="text" class="form-control"
+                   placeholder="e.g. '57.7900, -152.4072'">
+            <span class="input-group-btn">
+                <button onclick="getLocation()" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></button>
+            </span>
+        </div>
+
+        
+        <h5 style="text-align: left">Radius (km):</h5>
+        <div class="input-group">
+            <input id="radiusKMSearch" maxlength="30" type="text" class="form-control" placeholder="e.g. '300'">
+            <span class="input-group-btn">
+                <button id="searchRadius" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-record" aria-hidden="true"></span></button>
+            </span>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div id="graphs" class="col-sm-2 tabcontentRight" style="width: 70% !important;">
         <ul class="tab"
             style="z-index: 999; position: fixed; width: auto; background: rgba(46,74,110,1); overflow: visible">
             <li><a class="tablinksGraphs" onclick="openTabGraphs(event, 'magHistogram')" style="font-size: 16px">Magnitude</a>
@@ -494,6 +529,25 @@
 <script type="text/javascript" src="ui_controls.js"></script>
 <!--Require.js and main app-->
 <script data-main="Control" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script>
+
+<script>
+    // var x = document.getElementById("gpsLocation");
+    
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+    
+    function showPosition(position) {
+        document.getElementById("coordSearch").value = position.coords.latitude.toString() + ',' + position.coords.longitude.toString();
+    }
+
+    // document.getElementById("radiusKMSearch").value = 1000;
+
+</script>
 
 </body>
 

@@ -116,7 +116,8 @@ define(['./Circle',
             this.mostRecentSigEQ = function(GeoJSON) {
                 var eqArray = [];
                 for (var i = 0; i < GeoJSON.features.length; i++) {
-                    if (GeoJSON.features[i].properties.mag > 4.5) {
+                    //hardcoded filter 
+                    if (GeoJSON.features[i].properties.mag > 0) {
                         eqArray.push(GeoJSON.features[i]);
                     }
                 }
