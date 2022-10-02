@@ -197,21 +197,11 @@ define(['./Circle',
                         var eq_date = new Date(GeoJSON.features[i].properties.time).toISOString().split("T")[0]
                         var eq_mag = GeoJSON.features[i].properties.mag
                         var eq_depth = GeoJSON.features[i].geometry.coordinates[2]
-
                         const event_holder = {date:eq_date, magnitude:eq_mag, depth: eq_depth};
-
                         plotHolder.push(event_holder)
-
-
                         dateHolder.push(new Date(GeoJSON.features[i].properties.time).toISOString().split("T")[0]);
-                        console.log(new Date(GeoJSON.features[i].properties.time).toISOString());
                         magHolder.push(GeoJSON.features[i].properties.mag);
                     }
-
-                    // plotHolderSorted = plotHolder.sort((a, b) => a.date - b.date)
-                    // console.log("DT", dateHolder)
-                    // console.log("DT", dateHolder)
-                    // console.log("DT", plotHolder)
 
                     let plotHolderGrouped = {}
                     plotHolder.forEach((games) => {
@@ -224,102 +214,83 @@ define(['./Circle',
                     })
                     console.log("grouped", plotHolderGrouped)
 
-                    // plotHolderGrouped.sort((a,b) => a.updated_at - b.updated_at);
-                    // dateHolder.sort();
-                    // console.log("DT sort", dateHolder)
-
                     var dateEventFrequencies = {
                         Date: [],
                         EventFrequency: [],
                         MaxMag: []
                     };
-
-                    // var dateIndex = 0;
-                    // var counter = 0;
-
-                    // dateEventFrequencies.Date[dateIndex] = dateHolder[0];
-                    // var j;
-                    // for (j = 1; j <= dateHolder.length; j++) {
-                    //     if (dateEventFrequencies.Date[dateIndex] === dateHolder[j]) {
-                    //         counter++;
-                    //     }
-                    //     else{
-                    //         dateEventFrequencies.EventFrequency.push(counter);
-                    //         counter = 0;
-                    //         dateIndex++;
-                    //         dateEventFrequencies.Date[dateIndex] = dateHolder[j];
-                    //     }
-                    // }
-                    // // DONT MIND THIS...
-                    // dateEventFrequencies.EventFrequency[0] = dateEventFrequencies.EventFrequency[0] + 1 ;
-                    // dateEventFrequencies.Date.pop();
                     
                     Object.keys(plotHolderGrouped).forEach(function(key) {
-                        // plotHolder.push(event_holder)
-                        // console.log(key, len(plotHolderGrouped[key]));
                         dateEventFrequencies.Date.push(key);
                         dateEventFrequencies.EventFrequency.push(plotHolderGrouped[key].length);
-
                         var mag_arr = [];
                         
                         plotHolderGrouped[key].forEach(function (arrayItem) {
-                            // var x = arrayItem.prop1 + 2;
                             mag_arr.push(arrayItem["magnitude"]);
-                            // console.log(arrayItem["magnitude"]);
                         });
-                        // console.log(mag_arr);
                         var max_mag = Math.max.apply(null, mag_arr);
-
                         dateEventFrequencies.MaxMag.push(max_mag);
-
 
                     });
                     
-
                     var trace1 = {
                             x: dateEventFrequencies.Date,
                             y: dateEventFrequencies.EventFrequency,
-                            type: 'scatter',
+                            type: 'bar',
                             name: 'N of EQs',
+                            yaxis: 'y2',
+                            marker: {}
 
                     };
+
+                    // trace1.marker.color = trace1.y.map(function (v) {
+                    //     return v >= 5 ? 'red' : 'orange'
+                    //   });
                       
                     var trace2 = {
                         x: dateEventFrequencies.Date,
                         y: dateEventFrequencies.MaxMag,
-                        type: 'bar',
+                        type: 'scatter',
                         name: 'Max Magnitude',
-                        yaxis: 'y2',
-
                     };
                       
-                    var data = [trace1, trace2];
-
-
-                    // var data = [
-                    //     {
-                    //         x: dateEventFrequencies.Date,
-                    //         y: dateEventFrequencies.EventFrequency,
-                    //         type: 'scatter'
-                    //     }
-                    // ];
+                    var data = [trace2, trace1];
 
                     var layout = {
-                        title: "Earthquake Activity",
+                        title: "Earthquake Activity with 5 Richter Scale Threshold",
                         xaxis: {title: "Date",
-                                rangeslider: {visible: false},
-                                tickmode: 'linear'},
-                        yaxis: {title: "Number of Earthquakes"},
-                        yaxis2: {title: "Maximum Magnitude",
-                                // titlefont: {color: 'rgb(148, 103, 189)'},
-                                // tickfont: {color: 'rgb(148, 103, 189)'},
-                                 overlaying: 'y',
+                                rangeslider: {visible: false}},
+                        yaxis: {title: "Maximum Magnitude",
                                  side: 'right',
                                  range: [0, 10],
+                                 showgrid: false,
+                                 overlaying: 'y2',
+                                },
+                        yaxis2: {title: "Number of Earthquakes",
                                  showgrid: false},
                         width: width,
                         height: height,
-                        showlegend: false
+                        showlegend: true,
+                        legend: {
+                            x: 0,
+                            xanchor: 'left',
+                            y: 1.2
+                          },
+                          shapes: [
+                            {
+                                type: 'line',
+                                xref: 'paper',
+                                x0: 0,
+                                y0: 5.0,
+                                x1: 1,
+                                y1: 5.0,
+                                line:{
+                                    color: 'rgb(255, 0, 0)',
+                                    width: 1,
+                                    dash:'dot'
+                                }
+                            }
+                            ]
                     };
 
                     Plotly.newPlot('TimeSeries', data, layout, {displaylogo: false});
