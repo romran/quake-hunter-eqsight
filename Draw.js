@@ -257,12 +257,12 @@ define(['./Circle',
                     var data = [trace2, trace1];
 
                     var layout = {
-                        title: "Earthquake Activity with 5 Richter Scale Threshold",
+                        title: "Earthquakes Activity with 5 Richter Scale Threshold",
                         xaxis: {title: "Date",
                                 rangeslider: {visible: false}},
                         yaxis: {title: "Maximum Magnitude",
                                  side: 'right',
-                                 range: [0, 10],
+                                 range: [0, 8],
                                  showgrid: false,
                                  overlaying: 'y2',
                                 },
